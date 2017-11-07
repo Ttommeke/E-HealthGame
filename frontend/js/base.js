@@ -1,19 +1,30 @@
 var scene = new THREE.Scene();
+var serialDevice = undefined;
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight-4);
 document.body.appendChild( renderer.domElement );
 var TimeClock = new THREE.Clock();
 var fpsCounter = new Stats();
-fpsCounter.showPanel(0
+fpsCounter.showPanel(0);
 document.body.appendChild( fpsCounter.dom );
+
+document.getElementById("bodyId").onmousemove = Events.mouseMove;
+document.getElementById("bodyId").onkeydown = Events.keyDownEvent;
+document.getElementById("bodyId").onkeyup = Events.keyUpEvent;
+
+Serial.initSerial();
 
 var render = function() {
 	fpsCounter.begin();
 	var deltaTime = TimeClock.getDelta();
 
+	Serial.send("p\n");
+
 	if (Player.player != undefined) {
 		Player.executeKeys(Player.player, deltaTime);
+
+		Player.player.position.x = Motor.motors.motor1.readOutUpdate().angle/90;
 
 		var cameraPosition = new THREE.Vector3(
 			Player.player.position.x + Camera.cameraInitialInfo.offset.x,

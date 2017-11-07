@@ -1,7 +1,7 @@
 
 var Events = {};
 
-Events.generateKeyObject = function( pressed) {
+Events.generateKeyObject = function( pressed ) {
     var keyObject = {};
 
     keyObject.setPressed = function(pressedUpdate) {
