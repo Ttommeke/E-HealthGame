@@ -13,18 +13,16 @@ document.getElementById("bodyId").onmousemove = Events.mouseMove;
 document.getElementById("bodyId").onkeydown = Events.keyDownEvent;
 document.getElementById("bodyId").onkeyup = Events.keyUpEvent;
 
-Serial.initSerial();
+Serial.initSerial().catch(function(error) {
+	console.log(error);
+});
 
 var render = function() {
 	fpsCounter.begin();
 	var deltaTime = TimeClock.getDelta();
 
-	Serial.send("p\n");
-
 	if (Player.player != undefined) {
 		Player.executeKeys(Player.player, deltaTime);
-
-		Player.player.position.x = Motor.motors.motor1.readOutUpdate().angle/90;
 
 		var cameraPosition = new THREE.Vector3(
 			Player.player.position.x + Camera.cameraInitialInfo.offset.x,

@@ -3,6 +3,7 @@ let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeig
 
 let renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight - 4 );
+renderer.setClearColor( 0xAAAAAA, 1 );
 document.body.appendChild( renderer.domElement );
 
 
@@ -13,6 +14,9 @@ let endCube = Entity.createCube(1, 0x0000ff);
 endCube.position.x = 10;
 endCube.position.y = 4;
 scene.add( endCube );
+
+let lineToFollow = Entity.createLine(startCube.position, endCube.position, 0x0000FF);
+scene.add(lineToFollow);
 
 let cube = Entity.createCube(1, 0x00ff00);
 scene.add( cube );
@@ -35,8 +39,6 @@ Motor.motorLeft.onChangeCallback = function(oldAngle, newAngle) {
 		difference = Math.PI*2 + difference;
 	}
 
-	console.log(difference, newAngle, oldAngle);
-
 	cube.position.x += difference;
 }
 Motor.motorRight.onChangeCallback = function(oldAngle, newAngle) {
@@ -57,15 +59,17 @@ document.getElementById("bodyId").onkeyup = Events.keyUpEvent;
 
 let angle = 0;
 
+let lastPositionOfCube = cube.position.clone();
+
 let animate = function () {
 	requestAnimationFrame( animate );
 
-	cube.rotation.x += 0.1;
-	cube.rotation.y += 0.1;
-	startCube.rotation.x += 0.1;
-	startCube.rotation.y += 0.1;
-	endCube.rotation.x += 0.1;
-	endCube.rotation.y += 0.1;
+	//cube.rotation.x += 0.1;
+	//cube.rotation.y += 0.1;
+	//startCube.rotation.x += 0.1;
+	//startCube.rotation.y += 0.1;
+	//endCube.rotation.x += 0.1;
+	//endCube.rotation.y += 0.1;
 
 	if (Events.keys.ArrowUp.isPressed() && !Events.keys.ArrowDown.isPressed()) {
         Motor.motorRight.setAngle(Motor.motorRight.angle + 0.05);
@@ -79,6 +83,13 @@ let animate = function () {
     if (Events.keys.ArrowRight.isPressed()) {
         Motor.motorLeft.setAngle(Motor.motorLeft.angle + 0.05);
     }
+
+	if (!lastPositionOfCube.equals(cube.position) && lastPositionOfCube.distanceTo(cube.position) > 0.5) {
+		let line = Entity.createLine(lastPositionOfCube, cube.position, 0x444444);
+		scene.add(line);
+
+		lastPositionOfCube = cube.position.clone();
+	}
 
 	renderer.render(scene, camera);
 };

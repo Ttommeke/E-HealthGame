@@ -28,7 +28,6 @@ Serial.str2ab = function(str) {
 Serial.onReceive = function(data) {
     Serial.buffer += data;
 
-
     var indexOfBegin = Serial.buffer.indexOf("b");
     var indexOfEnd = Serial.buffer.indexOf("e");
 
@@ -37,6 +36,19 @@ Serial.onReceive = function(data) {
         Serial.buffer =  Serial.buffer.substring(indexOfEnd + 1);
 
         Motor.motors.motor1.setAngle(parseFloat(command));
+
+        var motorUpdate = Motor.motors.motor1.readOutUpdate();
+		var specialAngle = motorUpdate.angle - motorUpdate.previousAngle;
+		if (specialAngle > 150) {
+			specialAngle = specialAngle - 360;
+		}
+		if (specialAngle < -150) {
+			specialAngle = specialAngle + 360;
+		}
+
+		Player.player.position.z += (specialAngle)/90;
+
+        Serial.send("p\n");
     }
 }
 
@@ -46,14 +58,18 @@ Serial.send = function(toSend) {
 	}
 };
 
-Serial.initSerial = function() {
-    Serial.chromeSerialExtention.getDevices(function(data) {
-        Serial.chromeSerialExtention.connect(data[0].path, {
+Serial.connectToDevice = function(path) {
+    return new Promise(function(resolve, reject) {
+        Serial.chromeSerialExtention.connect(path, {
             bitrate: 115200
         }, function(serialDeviceBK) {
     		Serial.serialDevice = serialDeviceBK;
 
             console.log("Serial connection succesfull!");
+
+            Serial.send("p\n");
+
+            resolve();
 
             Serial.chromeSerialExtention.onReceive.addListener(function(info) {
 
@@ -61,4 +77,21 @@ Serial.initSerial = function() {
             });
         });
     });
+};
+
+Serial.initSerial = function() {
+
+    return new Promise(function(resolve, reject) {
+        Serial.chromeSerialExtention.getDevices(function(data) {
+
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].displayName == "Arduino_Zero") {
+                    return Serial.connectToDevice(data[i].path);
+                }
+            }
+
+            reject("No device found!");
+        });
+    });
+
 };
