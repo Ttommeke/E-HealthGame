@@ -55,7 +55,7 @@ Motor.createMotor = function( radiusMotor, radiusFingerNob, heightMotor, heightF
 
         let positionSmallCilinder = new THREE.Vector3( distanceOfNobFromCenterMotor, 0, heightFingerNob/2 + heightMotor/2);
         positionSmallCilinder.setFromSpherical(spherical);
-        newMotor.smallCilinder.position.x = newMotor.bigCilinder.position.x + positionSmallCilinder.x;
+        newMotor.smallCilinder.position.x = newMotor.bigCilinder.position.x - positionSmallCilinder.x;
         newMotor.smallCilinder.position.y = newMotor.bigCilinder.position.y + positionSmallCilinder.z;
         newMotor.smallCilinder.position.z = newMotor.bigCilinder.position.z + heightFingerNob/2 + heightMotor/2;
     }

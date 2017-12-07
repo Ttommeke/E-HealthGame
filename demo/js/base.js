@@ -39,7 +39,7 @@ Motor.motorLeft.onChangeCallback = function(oldAngle, newAngle) {
 		difference = Math.PI*2 + difference;
 	}
 
-	cube.position.x += difference;
+	cube.position.x += difference/4;
 }
 Motor.motorRight.onChangeCallback = function(oldAngle, newAngle) {
 	let difference = newAngle - oldAngle;
@@ -53,6 +53,8 @@ Motor.motorRight.onChangeCallback = function(oldAngle, newAngle) {
 
 	cube.position.y += difference;
 }
+
+Serial.initSerial();
 
 document.getElementById("bodyId").onkeydown = Events.keyDownEvent;
 document.getElementById("bodyId").onkeyup = Events.keyUpEvent;
