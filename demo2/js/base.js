@@ -1,6 +1,14 @@
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
+navigator.usb.requestDevice({ filters: [{ vendorId: 0x2341 }] })
+.then(device => {
+  console.log(device.productName);      // "Arduino Micro"
+  console.log(device.manufacturerName); // "Arduino LLC"
+})
+.catch(error => { console.log(error); });
+
+
 let renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight - 4 );
 renderer.setClearColor( 0xAAAAAA, 1 );

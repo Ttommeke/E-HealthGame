@@ -117,9 +117,6 @@ Serial.initSerial = function() {
             Serial.chromeSerialExtention.onReceive.addListener(function(info) {
                 Serial.onReceive(info);
             });
-        }).catch(function() {
-            DialogBox.showDialog("Setup failed!");
-
         });
 
     });
