@@ -1,5 +1,24 @@
 {
-  "name"    : "Demo E-Health",
-  "version" : "0.1.0",
-  "main"    : "main.js"
+  "name": "Demo E-Health",
+  "version": "0.1.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ttommeke/E-HealthGame.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ttommeke/E-HealthGame/issues"
+  },
+  "homepage": "https://github.com/Ttommeke/E-HealthGame#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "serialport-js": "^1.1.0"
+  }
 }
