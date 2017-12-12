@@ -27,6 +27,14 @@ Motor.displayMotors = function(position, distanceBetweenMotors, radiusMotor, rad
     scene.add(Motor.motorRight.smallCilinder);
 };
 
+Motor.isAngleRidiculous = function(oldAngle, angle) {
+    if (Math.abs(oldAngle - angle) > Math.PI/20) {
+        return true;
+    }
+
+    return false;
+}
+
 Motor.createMotor = function( radiusMotor, radiusFingerNob, heightMotor, heightFingerNob) {
     let newMotor = {};
     let distanceOfNobFromCenterMotor = radiusMotor*2/3;
@@ -49,9 +57,16 @@ Motor.createMotor = function( radiusMotor, radiusFingerNob, heightMotor, heightF
     }
 
     newMotor.setAngle = function(angle) {
-        newMotor.onChangeCallback(newMotor.angle, angle);
-        newMotor.angle = angle;
-        let spherical = new THREE.Spherical(distanceOfNobFromCenterMotor, Math.PI/2, -angle);
+        let oldAngle = newMotor.angle;
+        let newAngle = angle;
+
+        if (!Motor.isAngleRidiculous(oldAngle, newAngle)) {
+            newAngle = oldAngle
+        }
+
+        newMotor.onChangeCallback(oldAngle, newAngle);
+        newMotor.angle = newAngle;
+        let spherical = new THREE.Spherical(distanceOfNobFromCenterMotor, Math.PI/2, -newAngle);
 
         let positionSmallCilinder = new THREE.Vector3( distanceOfNobFromCenterMotor, 0, heightFingerNob/2 + heightMotor/2);
         positionSmallCilinder.setFromSpherical(spherical);

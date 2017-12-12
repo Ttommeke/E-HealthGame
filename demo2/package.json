@@ -17,6 +17,9 @@
     "url": "https://github.com/Ttommeke/E-HealthGame/issues"
   },
   "homepage": "https://github.com/Ttommeke/E-HealthGame#readme",
+  "engines": {
+    "node": "7.9.0"
+  },
   "dependencies": {
     "express": "^4.16.2",
     "serialport-js": "^1.1.0"

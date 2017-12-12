@@ -56,25 +56,14 @@ let initMotor = function(motor, device) {
     Serial.sendToDevice(motor.device, "p\n");
 
     motor.device.on("data", (data) => {
-
-        if (data != "b" || data != "e" || data != "\n") {
-            console.log("received: '" + data + "'" + parseFloat(data));
-            motor.angle = parseFloat(data)*Math.PI/180;
+        let callback = function() {
             Serial.sendToDevice(motor.device, "p\n");
         }
-        /*motor.buffer = data;
 
-        var indexOfBegin = motor.buffer.indexOf("b");
-        var indexOfEnd = motor.buffer.indexOf("e");
-
-        if (indexOfEnd != -1) {
-            var command = motor.buffer.substring(indexOfBegin + 1, indexOfEnd);
-            motor.buffer =  motor.buffer.substring(indexOfEnd + 1);
-
-            motor.angle.setAngle(parseFloat(command)*Math.PI/180);
-
-            Serial.send(motor.device, "p\n");
-        }*/
+        if (!isNaN(parseFloat(data))) {
+            motor.angle = parseFloat(data)*Math.PI/180;
+            setTimeout(callback, 10);
+        }
     });
 };
 

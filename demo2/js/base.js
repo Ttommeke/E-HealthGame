@@ -71,7 +71,9 @@ ipcRenderer.sendSync('ConnectToMotorLeft', {});
 let animate = function () {
 	requestAnimationFrame( animate );
 
-    console.log(ipcRenderer.sendSync('RequestAngles', {}) );
+    let angles = ipcRenderer.sendSync('RequestAngles', {});
+	Motor.motorLeft.setAngle(angles.left);
+	Motor.motorRight.setAngle(angles.right);
 
 	//cube.rotation.x += 0.1;
 	//cube.rotation.y += 0.1;

@@ -46,11 +46,12 @@ Serial.onReceive = function(data) {
 
     motor.buffer += Serial.ab2str(data.data);
 
-    var indexOfBegin = motor.buffer.indexOf("b");
-    var indexOfEnd = motor.buffer.indexOf("e");
+    var indexOfEnd = motor.buffer.indexOf("\n");
+
 
     if (indexOfEnd != -1) {
-        var command = motor.buffer.substring(indexOfBegin + 1, indexOfEnd);
+        var command = motor.buffer.substring(0, indexOfEnd);
+        console.log(command);
         motor.buffer =  motor.buffer.substring(indexOfEnd + 1);
 
 

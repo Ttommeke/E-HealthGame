@@ -4,7 +4,6 @@ let connectToSerialmotor = (portNotToConnectTo) => {
     return new Promise(function(resolve, reject) {
         const delimiter = '\n';
         serialjs.find().then((ports) => {
-            console.log(ports);
             let found = false;
 
             for (let i = 0; i < ports.length; i++) {
