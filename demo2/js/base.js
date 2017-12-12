@@ -29,7 +29,7 @@ let hemiLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 scene.add( hemiLight );
 
 camera.position.z = 12;
-Motor.displayMotors(new THREE.Vector3( 0, -5, 0), 8, 1, 0.3, 0.2, 0.2);
+Motor.displayMotors(new THREE.Vector3( 0, 7, 0), 20, 1, 0.3, 0.2, 0.2);
 Motor.motorLeft.onChangeCallback = function(oldAngle, newAngle) {
 	let difference = newAngle - oldAngle;
 
@@ -55,7 +55,6 @@ Motor.motorRight.onChangeCallback = function(oldAngle, newAngle) {
 	cube.position.y += difference/4;
 }
 DialogBox.init();
-//Serial.initSerial();
 
 document.getElementById("bodyId").onkeydown = Events.keyDownEvent;
 document.getElementById("bodyId").onkeyup = Events.keyUpEvent;
@@ -64,14 +63,13 @@ let angle = 0;
 
 let lastPositionOfCube = cube.position.clone();
 
-const {ipcRenderer} = require('electron')
-
-ipcRenderer.sendSync('ConnectToMotorLeft', {});
+console.log(Ipc.ConnectToMotorLeft());
+console.log(Ipc.ConnectToMotorRight());
 
 let animate = function () {
 	requestAnimationFrame( animate );
 
-    let angles = ipcRenderer.sendSync('RequestAngles', {});
+    let angles = Ipc.getAnglesOfMotors();
 	Motor.motorLeft.setAngle(angles.left);
 	Motor.motorRight.setAngle(angles.right);
 
@@ -83,16 +81,16 @@ let animate = function () {
 	//endCube.rotation.y += 0.1;
 
 	if (Events.keys.ArrowUp.isPressed() && !Events.keys.ArrowDown.isPressed()) {
-        Motor.motorRight.setAngle(Motor.motorRight.angle + 0.05);
+        Ipc.manipulateYAngle(Motor.motorRight.angle + 0.05);
     }
     if (Events.keys.ArrowDown.isPressed() && !Events.keys.ArrowUp.isPressed()) {
-        Motor.motorRight.setAngle(Motor.motorRight.angle - 0.05);
+        Ipc.manipulateYAngle(Motor.motorRight.angle - 0.05);
     }
-    if (Events.keys.ArrowLeft.isPressed()) {
-        Motor.motorLeft.setAngle(Motor.motorLeft.angle - 0.05);
+    if (Events.keys.ArrowLeft.isPressed() && !Events.keys.ArrowRight.isPressed()) {
+        Ipc.manipulateXAngle(Motor.motorLeft.angle - 0.05);
     }
-    if (Events.keys.ArrowRight.isPressed()) {
-        Motor.motorLeft.setAngle(Motor.motorLeft.angle + 0.05);
+    if (Events.keys.ArrowRight.isPressed() && !Events.keys.ArrowLeft.isPressed()) {
+        Ipc.manipulateXAngle(Motor.motorLeft.angle + 0.05);
     }
 
 	if (!lastPositionOfCube.equals(cube.position) && lastPositionOfCube.distanceTo(cube.position) > 0.1) {

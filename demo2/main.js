@@ -106,3 +106,19 @@ ipcMain.on('RequestAngles', (event, arg) => {
         right: motorRight.angle
     };
 });
+
+ipcMain.on('manipulateXAngle', (event, arg) => {
+    motorLeft.angle = arg.angle;
+
+    event.returnValue = {
+        result: "SUCCES"
+    };
+});
+
+ipcMain.on('manipulateYAngle', (event, arg) => {
+    motorRight.angle = arg.angle;
+
+    event.returnValue = {
+        result: "SUCCES"
+    };
+});

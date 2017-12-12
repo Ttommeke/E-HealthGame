@@ -6,7 +6,8 @@ let Motor = {
     radiusMotor: 2.5,
     heightMotor: 0.5,
     radiusFingerNob: 0.5,
-    heightFingerNob: 0.5
+    heightFingerNob: 0.5,
+    ridiculousAngleDiference: Math.PI/20
 };
 
 Motor.displayMotors = function(position, distanceBetweenMotors, radiusMotor, radiusFingerNob, heightMotor, heightFingerNob) {
@@ -18,8 +19,8 @@ Motor.displayMotors = function(position, distanceBetweenMotors, radiusMotor, rad
     let posRight = new THREE.Vector3(position.x + distanceBetweenMotors/2, position.y, position.z);
 
 
-    Motor.motorLeft.setPosition(new THREE.Vector3( -5, -5, 0));
-    Motor.motorRight.setPosition(new THREE.Vector3( 5, -5, 0));
+    Motor.motorLeft.setPosition(posLeft);
+    Motor.motorRight.setPosition(posRight);
 
     scene.add(Motor.motorLeft.bigCilinder);
     scene.add(Motor.motorLeft.smallCilinder);
@@ -28,7 +29,8 @@ Motor.displayMotors = function(position, distanceBetweenMotors, radiusMotor, rad
 };
 
 Motor.isAngleRidiculous = function(oldAngle, angle) {
-    if (Math.abs(oldAngle - angle) > Math.PI/20) {
+    let absoluteAngle = Math.abs(oldAngle - angle);
+    if (absoluteAngle > Motor.ridiculousAngleDiference && absoluteAngle < (Math.PI - Motor.ridiculousAngleDiference)) {
         return true;
     }
 
@@ -59,8 +61,12 @@ Motor.createMotor = function( radiusMotor, radiusFingerNob, heightMotor, heightF
     newMotor.setAngle = function(angle) {
         let oldAngle = newMotor.angle;
         let newAngle = angle;
+        if (newAngle < 0) {
+            newAngle = Math.PI*2 + newAngle;
+        }
+        newAngle = newAngle%(Math.PI*2);
 
-        if (!Motor.isAngleRidiculous(oldAngle, newAngle)) {
+        if (Motor.isAngleRidiculous(oldAngle, newAngle)) {
             newAngle = oldAngle
         }
 
@@ -73,6 +79,12 @@ Motor.createMotor = function( radiusMotor, radiusFingerNob, heightMotor, heightF
         newMotor.smallCilinder.position.x = newMotor.bigCilinder.position.x - positionSmallCilinder.x;
         newMotor.smallCilinder.position.y = newMotor.bigCilinder.position.y + positionSmallCilinder.z;
         newMotor.smallCilinder.position.z = newMotor.bigCilinder.position.z + heightFingerNob/2 + heightMotor/2;
+
+        if (newAngle > Math.PI*1.9 || newAngle < Math.PI*0.1) {
+            newMotor.smallCilinder.material.color.setHex( 0x00ff00 );
+        } else {
+            newMotor.smallCilinder.material.color.setHex( 0xff0000 );
+        }
     }
 
     return newMotor;

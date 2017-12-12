@@ -4,7 +4,6 @@ let connectToSerialmotor = (portNotToConnectTo) => {
     return new Promise(function(resolve, reject) {
         const delimiter = '\n';
         serialjs.find().then((ports) => {
-            let found = false;
 
             for (let i = 0; i < ports.length; i++) {
                 let port = ports[i];
@@ -13,16 +12,20 @@ let connectToSerialmotor = (portNotToConnectTo) => {
                     return serialjs.open(port.port, delimiter);
                 }
             }
-
-            if (!found) {
-                reject("No motor found!");
-            }
         }).then((device) => {
-            device.on('error', (error) => {
-                console.error(error);
-            });
+            
+            if (device == undefined) {
+                reject("No motor found!");
+            } else {
+                device.on('error', (error) => {
+                    console.error(error);
+                });
 
-            resolve(device);
+                resolve(device);
+            }
+
+        }).catch(function(err) {
+            reject(err);
         });
 
     });
