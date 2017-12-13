@@ -55,6 +55,7 @@ Motor.motorRight.onChangeCallback = function(oldAngle, newAngle) {
 	cube.position.y += difference/4;
 }
 DialogBox.init();
+TextMessage.init();
 
 document.getElementById("bodyId").onkeydown = Events.keyDownEvent;
 document.getElementById("bodyId").onkeyup = Events.keyUpEvent;

@@ -35,7 +35,7 @@ Motor.isAngleRidiculous = function(oldAngle, angle) {
     }
 
     return false;
-}
+};
 
 Motor.createMotor = function( radiusMotor, radiusFingerNob, heightMotor, heightFingerNob) {
     let newMotor = {};
