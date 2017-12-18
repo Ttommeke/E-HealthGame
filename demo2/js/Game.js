@@ -1,5 +1,10 @@
 let Game = {
+    games: [],
+    activeGameIndex: 0
+};
 
+Game.loadNewGames = function(gameFilePath) {
+    
 };
 
 Game.startRound = function() {
@@ -8,4 +13,4 @@ Game.startRound = function() {
     	TextMessage.hideMessage();
     }
     setTimeout(callback, 5000);
-}
+};

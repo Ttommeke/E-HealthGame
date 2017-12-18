@@ -11,7 +11,7 @@ serialjs.find().then((ports) => {
     }
 }).then((device) => {
     let callback = function() {
-        device.send("p");
+        device.send("p\n");
     }
 
     device.on('error', (error) => {
@@ -23,5 +23,5 @@ serialjs.find().then((ports) => {
         setTimeout( callback, 20);
     });
 
-    device.send("p");
+    device.send("p\n");
 });

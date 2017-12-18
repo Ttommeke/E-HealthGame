@@ -1,0 +1,20 @@
+[
+    {
+        "posX": 1,
+        "posY": 1,
+        "time": 5
+    },{
+        "posX": 1,
+        "posY": -1,
+        "time": 4
+    },{
+        "posX": 1,
+        "posY": 3,
+        "time": 3
+    },{
+        "posX": 3,
+        "posY": 1,
+        "time": 2
+    },
+
+]

@@ -60,6 +60,8 @@ let initMotor = function(motor, device) {
             Serial.sendToDevice(motor.device, "p\n");
         }
 
+        console.log("received: " + data ,parseFloat(data));
+
         if (!isNaN(parseFloat(data))) {
             motor.angle = parseFloat(data)*Math.PI/180;
             setTimeout(callback, 10);
@@ -69,8 +71,9 @@ let initMotor = function(motor, device) {
 
 ipcMain.on('ConnectToMotorLeft', (event, arg) => {
     Serial.connectToSerialmotor(motorRight.port).then((device) => {
-        initMotor(motorLeft, device);
 
+        initMotor(motorLeft, device);
+        console.log(device);
         event.returnValue = {
             result: "SUCCES"
         };
@@ -104,6 +107,13 @@ ipcMain.on('RequestAngles', (event, arg) => {
     event.returnValue = {
         left: motorLeft.angle,
         right: motorRight.angle
+    };
+});
+
+ipcMain.on('getFile', (event, arg) => {
+
+    event.returnValue = {
+        file: arg.file
     };
 });
 

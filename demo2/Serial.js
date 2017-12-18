@@ -13,7 +13,7 @@ let connectToSerialmotor = (portNotToConnectTo) => {
                 }
             }
         }).then((device) => {
-            
+
             if (device == undefined) {
                 reject("No motor found!");
             } else {

@@ -7,7 +7,7 @@ let Motor = {
     heightMotor: 0.5,
     radiusFingerNob: 0.5,
     heightFingerNob: 0.5,
-    ridiculousAngleDiference: Math.PI/20
+    ridiculousAngleDiference: Math.PI/4
 };
 
 Motor.displayMotors = function(position, distanceBetweenMotors, radiusMotor, radiusFingerNob, heightMotor, heightFingerNob) {
