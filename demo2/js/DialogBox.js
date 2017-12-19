@@ -16,10 +16,10 @@ DialogBox.init = function() {
 
 DialogBox.selectFile = function() {
     const {dialog} = require('electron')
-    dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']});
+    dialog.showOpenDialog({ properties: ['openFile', 'openDirectory', 'multiSelections'] });
 };
 
-DialogBox.showSelectFileDialog = function() {
+DialogBox.showSelectFileDialog = function(text) {
     return new Promise(function(resolve, reject) {
         DialogBox.dialogBox.style.display = "block";
         DialogBox.messageBox.innerHTML = text;
@@ -28,8 +28,11 @@ DialogBox.showSelectFileDialog = function() {
         DialogBox.browseBox.style.display = "block";
         DialogBox.browseBox.addEventListener("click", function() {
             DialogBox.dialogBox.style.display = "none";
-            const {dialog} = require('electron')
-            resolve(dialog.showOpenDialog({ title: "Open game", properties: ['openFile', 'openDirectory', 'multiSelections']}));
+
+            Ipc.getFile().then(function(fileData) {
+
+                resolve(fileData);
+            });
         });
         DialogBox.cancelBox.addEventListener("click", function() {
             reject("No file selected!");

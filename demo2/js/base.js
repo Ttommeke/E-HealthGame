@@ -6,21 +6,19 @@ renderer.setSize( window.innerWidth, window.innerHeight - 4 );
 renderer.setClearColor( 0xAAAAAA, 1 );
 document.body.appendChild( renderer.domElement );
 
+scene.add( Game.startCube );
 
-let startCube = Entity.createCube(0.2, 0xff0000);
-scene.add( startCube );
+scene.add( Game.endCube );
 
-let endCube = Entity.createCube(0.2, 0x0000ff);
-endCube.position.x = 10;
-endCube.position.y = 4;
-scene.add( endCube );
+scene.add( Game.cilinderToFolow );
 
-let lineToFollow = Entity.createLine(startCube.position, endCube.position, 0x0000FF);
-scene.add(lineToFollow);
+Game.lineToFollow = Entity.createLine(Game.startCube.position, Game.endCube.position, 0x0000FF);
+scene.add( Game.lineToFollow );
 
-let cube = Entity.createCylinder(0.3,0.2, 0x00ff00);
-cube.rotation.x = Math.PI/2;
-scene.add( cube );
+Game.cilinder = Entity.createCylinder(0.3,0.2, 0x00ff00);
+Game.cilinderToFolow.rotation.x = Math.PI/2;
+Game.cilinder.rotation.x = Math.PI/2;
+scene.add( Game.cilinder );
 
 let dirlight = new THREE.DirectionalLight( 0xFFFFFF );
 scene.add( dirlight );
@@ -40,7 +38,9 @@ Motor.motorLeft.onChangeCallback = function(oldAngle, newAngle) {
 		difference = Math.PI*2 + difference;
 	}
 
-	cube.position.x += difference/4;
+	if (Game.busy && !Game.countDown) {
+		Game.cilinder.position.x += difference*Game.games[Game.activeGameIndex].speedFactorCube;
+	}
 }
 Motor.motorRight.onChangeCallback = function(oldAngle, newAngle) {
 	let difference = newAngle - oldAngle;
@@ -52,7 +52,9 @@ Motor.motorRight.onChangeCallback = function(oldAngle, newAngle) {
 		difference = Math.PI*2 + difference;
 	}
 
-	cube.position.y += difference/4;
+	if (Game.busy && !Game.countDown) {
+		Game.cilinder.position.y += difference*Game.games[Game.activeGameIndex].speedFactorCube;
+	}
 }
 DialogBox.init();
 TextMessage.init();
@@ -62,10 +64,22 @@ document.getElementById("bodyId").onkeyup = Events.keyUpEvent;
 
 let angle = 0;
 
-let lastPositionOfCube = cube.position.clone();
+let lastPositionOfCube = Game.cilinder.position.clone();
 
-console.log(Ipc.ConnectToMotorLeft());
-console.log(Ipc.ConnectToMotorRight());
+DialogBox.showDialog("Connect left motor").then(function() {
+	Ipc.ConnectToMotorLeft();
+	return DialogBox.showDialog("Connect right motor");
+}).then(function() {
+	Ipc.ConnectToMotorRight();
+	return DialogBox.showDialog("Setup succesfull!");
+}).then(function() {
+	return DialogBox.showSelectFileDialog("Open a test file.");
+}).then(function(file) {
+	Game.loadNewGames(file);
+}).catch(function(err) {
+	console.log(err);
+	DialogBox.showDialog("Setup failed!");
+});
 
 let animate = function () {
 	requestAnimationFrame( animate );
@@ -94,11 +108,32 @@ let animate = function () {
         Ipc.manipulateXAngle(Motor.motorLeft.angle + 0.05);
     }
 
-	if (!lastPositionOfCube.equals(cube.position) && lastPositionOfCube.distanceTo(cube.position) > 0.1) {
-		let line = Entity.createLine(lastPositionOfCube, cube.position, 0x444444);
-		scene.add(line);
+	if (Game.busy) {
 
-		lastPositionOfCube = cube.position.clone();
+		if (!Game.countDown) {
+			let elapsedTime = (performance.now() - Game.startTime) / 1000;
+
+			let percentageOfPosition = elapsedTime/Game.games[Game.activeGameIndex].time;
+			Game.cilinderToFolow.position.x = percentageOfPosition * Game.endCube.position.x;
+			Game.cilinderToFolow.position.y = percentageOfPosition * Game.endCube.position.y;
+
+			if (!lastPositionOfCube.equals(Game.cilinder.position) && lastPositionOfCube.distanceTo(Game.cilinder.position) > 0.1) {
+				let line = Entity.createLine(lastPositionOfCube, Game.cilinder.position, 0x444444);
+				Game.lines.push(line);
+				scene.add(line);
+
+				lastPositionOfCube = Game.cilinder.position.clone();
+			}
+
+			if (elapsedTime >= Game.games[Game.activeGameIndex].time) {
+				Game.endRound();
+			}
+		}
+
+	} else {
+		if (Motor.motorLeft.isUpright() && Motor.motorRight.isUpright()) {
+	        Game.startRound();
+	    }
 	}
 
 	renderer.render(scene, camera);

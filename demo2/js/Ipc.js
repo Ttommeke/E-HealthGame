@@ -14,6 +14,19 @@ Ipc.getAnglesOfMotors = function() {
     return Ipc.renderer.sendSync('RequestAngles', {});
 };
 
+Ipc.getFile = function() {
+    return new Promise(function(resolve, reject) {
+        Ipc.renderer.send('getFile');
+
+        Ipc.renderer.on("newFile", function(eventff, arg) {
+            if (arg !== undefined) {
+                resolve(arg);
+            } else {
+                reject("No file!");
+            }
+        });
+    });
+};
 
 Ipc.manipulateXAngle = function(angle) {
     return Ipc.renderer.sendSync('manipulateXAngle', { angle: angle });

@@ -2,19 +2,23 @@
     {
         "posX": 1,
         "posY": 1,
-        "time": 5
+        "time": 5,
+        "speedFactorCube": 0.7
     },{
         "posX": 1,
         "posY": -1,
-        "time": 4
+        "time": 4,
+        "speedFactorCube": 0.7
     },{
         "posX": 1,
         "posY": 3,
-        "time": 3
+        "time": 3,
+        "speedFactorCube": 0.7
     },{
         "posX": 3,
         "posY": 1,
-        "time": 2
-    },
+        "time": 2,
+        "speedFactorCube": 0.7
+    }
 
 ]

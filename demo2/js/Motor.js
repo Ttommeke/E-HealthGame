@@ -10,6 +10,14 @@ let Motor = {
     ridiculousAngleDiference: Math.PI/4
 };
 
+Motor.setPosition = function(position, distanceBetweenMotors) {
+    let posLeft = new THREE.Vector3(position.x - distanceBetweenMotors/2, position.y, position.z);
+    let posRight = new THREE.Vector3(position.x + distanceBetweenMotors/2, position.y, position.z);
+
+    Motor.motorLeft.setPosition(posLeft);
+    Motor.motorRight.setPosition(posRight);
+}
+
 Motor.displayMotors = function(position, distanceBetweenMotors, radiusMotor, radiusFingerNob, heightMotor, heightFingerNob) {
 
     Motor.motorLeft = Motor.createMotor(radiusMotor, radiusFingerNob, heightMotor, heightFingerNob);
@@ -58,6 +66,14 @@ Motor.createMotor = function( radiusMotor, radiusFingerNob, heightMotor, heightF
         newMotor.smallCilinder.position.set(positionSmallCilinder.x, positionSmallCilinder.y, positionSmallCilinder.z);
     }
 
+    newMotor.isUpright = function() {
+        if (newMotor.angle > Math.PI*1.9 || newMotor.angle < Math.PI*0.1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     newMotor.setAngle = function(angle) {
         let oldAngle = newMotor.angle;
         let newAngle = angle;
@@ -80,7 +96,7 @@ Motor.createMotor = function( radiusMotor, radiusFingerNob, heightMotor, heightF
         newMotor.smallCilinder.position.y = newMotor.bigCilinder.position.y + positionSmallCilinder.z;
         newMotor.smallCilinder.position.z = newMotor.bigCilinder.position.z + heightFingerNob/2 + heightMotor/2;
 
-        if (newAngle > Math.PI*1.9 || newAngle < Math.PI*0.1) {
+        if (newMotor.isUpright()) {
             newMotor.smallCilinder.material.color.setHex( 0x00ff00 );
         } else {
             newMotor.smallCilinder.material.color.setHex( 0xff0000 );

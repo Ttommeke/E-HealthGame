@@ -1,6 +1,7 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, dialog} = require('electron')
 const path = require('path')
 const url = require('url')
+const fs = require('fs')
 
 let win
 
@@ -40,12 +41,12 @@ const {ipcMain} = require('electron');
 let motorLeft = {
     port: "",
     buffer: "",
-    angle: 0,
+    angle: Math.PI/3,
     device: undefined
 };
 let motorRight = {
     port: "",
-    angle: 0,
+    angle: Math.PI/6,
     device: undefined
 };
 
@@ -111,10 +112,26 @@ ipcMain.on('RequestAngles', (event, arg) => {
 });
 
 ipcMain.on('getFile', (event, arg) => {
+    let fileName = dialog.showOpenDialog({
+        title: "Open Excercise",
+        properties: ['openFile'],
+        filters: [
+            {name: 'json', extensions: ['json']}
+        ]
+    });
 
-    event.returnValue = {
-        file: arg.file
-    };
+    if (fileName !== undefined) {
+        fs.readFile(fileName[0], 'utf8', function (err,data) {
+            if (err) {
+                return console.log(err);
+            }
+
+            event.sender.send('newFile', JSON.parse(data));
+        });
+    }
+    else {
+        event.sender.send('newFile', undefined);
+    }
 });
 
 ipcMain.on('manipulateXAngle', (event, arg) => {
