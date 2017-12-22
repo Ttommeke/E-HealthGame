@@ -2,12 +2,12 @@ let Ipc = {
     renderer: require('electron').ipcRenderer
 };
 
-Ipc.ConnectToMotorLeft = function() {
-    return Ipc.renderer.sendSync('ConnectToMotorLeft', {});
+Ipc.ConnectToMotorLeft = function(port) {
+    return Ipc.renderer.sendSync('ConnectToMotorLeft', { port: port });
 };
 
-Ipc.ConnectToMotorRight = function() {
-    return Ipc.renderer.sendSync('ConnectToMotorRight', {});
+Ipc.ConnectToMotorRight = function(port) {
+    return Ipc.renderer.sendSync('ConnectToMotorRight', { port: port });
 };
 
 Ipc.getAnglesOfMotors = function() {

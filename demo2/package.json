@@ -23,6 +23,7 @@
   "dependencies": {
     "express": "^4.16.2",
     "serialport": "^6.0.4",
-    "serialport-js": "^1.1.0"
+    "serialport-js": "^1.1.0",
+    "serialport-v4": "^4.0.9"
   }
 }

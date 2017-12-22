@@ -71,10 +71,11 @@ let initMotor = function(motor, device) {
 };
 
 ipcMain.on('ConnectToMotorLeft', (event, arg) => {
-    Serial.connectToSerialmotor(motorRight.port).then((device) => {
+    Serial.connectToSerialmotor(arg.port).then((device) => {
 
         initMotor(motorLeft, device);
         console.log(device);
+        
         event.returnValue = {
             result: "SUCCES"
         };
@@ -88,8 +89,10 @@ ipcMain.on('ConnectToMotorLeft', (event, arg) => {
 });
 
 ipcMain.on('ConnectToMotorRight', (event, arg) => {
-    Serial.connectToSerialmotor(motorLeft.port).then((device) => {
+    Serial.connectToSerialmotor(arg.port).then((device) => {
+
         initMotor(motorRight, device);
+        console.log(device);
 
         event.returnValue = {
             result: "SUCCES"

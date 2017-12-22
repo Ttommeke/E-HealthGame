@@ -1,18 +1,12 @@
 const serialjs = require('serialport-js');
 
-let connectToSerialmotor = (portNotToConnectTo) => {
+let connectToSerialmotor = (portname) => {
     return new Promise(function(resolve, reject) {
         const delimiter = '\n';
-        serialjs.find().then((ports) => {
 
-            for (let i = 0; i < ports.length; i++) {
-                let port = ports[i];
+        console.log(portname);
 
-                if (port.port != portNotToConnectTo) {
-                    return serialjs.open(port.port, delimiter);
-                }
-            }
-        }).then((device) => {
+        serialjs.open(portname, delimiter).then((device) => {
 
             if (device == undefined) {
                 reject("No motor found!");

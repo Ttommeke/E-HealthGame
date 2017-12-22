@@ -1,4 +1,7 @@
 const serialjs = require('serialport-js');
+
+let device = undefined;
+
 serialjs.find().then((ports) => {
     let found = false;
 
@@ -9,7 +12,8 @@ serialjs.find().then((ports) => {
             return serialjs.open(port.port, "\n");
         }
     }
-}).then((device) => {
+}).then((deviceff) => {
+    device = deviceff;
     let callback = function() {
         device.send("p\n");
     }
@@ -24,4 +28,6 @@ serialjs.find().then((ports) => {
     });
 
     device.send("p\n");
+}).catch(function(err) {
+    console.log(err);
 });

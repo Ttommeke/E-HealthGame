@@ -66,11 +66,11 @@ let angle = 0;
 
 let lastPositionOfCube = Game.cilinder.position.clone();
 
-DialogBox.showDialog("Connect left motor").then(function() {
-	Ipc.ConnectToMotorLeft();
-	return DialogBox.showDialog("Connect right motor");
-}).then(function() {
-	Ipc.ConnectToMotorRight();
+DialogBox.showDialogInput("Connect left motor").then(function(port) {
+	Ipc.ConnectToMotorLeft(port);
+	return DialogBox.showDialogInput("Connect right motor");
+}).then(function(port) {
+	Ipc.ConnectToMotorRight(port);
 	return DialogBox.showDialog("Setup succesfull!");
 }).then(function() {
 	return DialogBox.showSelectFileDialog("Open a test file.");
